@@ -113,3 +113,14 @@ export const setLoading = () => {
     type: SET_LOADING,
   };
 };
+// Generate shareable link
+export const shareTrip = (id) => async () => {
+  try {
+    const res = await api.post(`/trips/${id}/share`);
+    toast.success("Shareable link generated! 🔗");
+    return res.data.shareToken;
+  } catch (err) {
+    toast.error("Failed to generate share link");
+    return null;
+  }
+};
