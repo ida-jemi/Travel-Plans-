@@ -28,7 +28,7 @@ const VerifyOtp = () => {
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
 
   // Retrieve email and block status from navigation state or fallback
-  const email = location.state?.email || "";
+  const email = location.state?.email || localStorage.getItem("otpEmail") || "";
   const initialBlocked = location.state?.blocked || false;
   const initialBlockedUntil = location.state?.blockedUntil || null;
 
@@ -49,6 +49,69 @@ const VerifyOtp = () => {
   const [isBlocked, setIsBlocked] = useState(initialBlocked);
   const [blockedUntil, setBlockedUntil] = useState(initialBlockedUntil);
   const [hoursLeft, setHoursLeft] = useState(0);
+
+  // Save email to localStorage for refresh and multi-tab persistence
+  useEffect(() => {
+    if (location.state?.email) {
+      localStorage.setItem("otpEmail", location.state.email);
+    }
+  }, [location.state?.email]);
+
+  // Fetch real OTP status (remaining time, cooldown, lockout details) from DB on mount
+  useEffect(() => {
+    if (!email) return;
+
+    const fetchOtpStatus = async () => {
+      try {
+        const res = await api.post("/auth/otp-status", { email });
+        
+        // If user is already verified, redirect them directly to dashboard
+        if (res.data.isVerified) {
+          navigate("/dashboard");
+          return;
+        }
+
+        const {
+          timeLeft: serverTimeLeft,
+          resendCooldown: serverCooldown,
+          isBlocked: serverBlocked,
+          blockedUntil: serverBlockedUntil,
+          hoursLeft: serverHours,
+        } = res.data;
+
+        // Sync OTP expiration timer
+        if (serverTimeLeft > 0) {
+          setTimeLeft(serverTimeLeft);
+          setIsTimerActive(true);
+        } else {
+          setTimeLeft(0);
+          setIsTimerActive(false);
+        }
+
+        // Sync resend cooldown
+        if (serverCooldown > 0) {
+          setResendCooldown(serverCooldown);
+        } else {
+          setResendCooldown(0);
+        }
+
+        // Sync lockout details
+        if (serverBlocked) {
+          setIsBlocked(true);
+          setBlockedUntil(serverBlockedUntil);
+          setHoursLeft(serverHours);
+        } else {
+          setIsBlocked(false);
+          setBlockedUntil(null);
+          setHoursLeft(0);
+        }
+      } catch (err) {
+        console.error("Failed to fetch OTP status:", err);
+      }
+    };
+
+    fetchOtpStatus();
+  }, [email, navigate]);
 
   // Auto-focus first input on load
   useEffect(() => {

@@ -28,6 +28,21 @@ router.put("/profile", auth, authController.updateProfile);
 // @access  Private
 router.put("/change-password", auth, authController.changePassword);
 
+// @route   POST api/auth/request-email-change
+// @desc    Request email change OTP
+// @access  Private
+router.post("/request-email-change", auth, authController.requestEmailChange);
+
+// @route   POST api/auth/verify-email-change
+// @desc    Verify email change OTP
+// @access  Private
+router.post("/verify-email-change", auth, authController.verifyEmailChange);
+
+// @route   GET api/auth/email-change-status
+// @desc    Get real-time OTP status for active email change
+// @access  Private
+router.get("/email-change-status", auth, authController.getEmailChangeStatus);
+
 // @route   POST api/auth/forgot-password
 // @desc    Forgot password (send email)
 // @access  Public
@@ -47,5 +62,10 @@ router.post("/verify-otp", authController.verifyOtp);
 // @desc    Resend email verification OTP
 // @access  Public
 router.post("/resend-otp", authController.resendOtp);
+
+// @route   POST api/auth/otp-status
+// @desc    Get remaining OTP expiration and cooldown times
+// @access  Public
+router.post("/otp-status", authController.getOtpStatus);
 
 module.exports = router;

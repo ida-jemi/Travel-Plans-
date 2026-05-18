@@ -46,6 +46,10 @@ const UserSchema = new mongoose.Schema({
     type: Date,
     default: null,
   },
+  tempEmail: {
+    type: String,
+    default: null,
+  },
 });
 
 // Hash the password before saving
