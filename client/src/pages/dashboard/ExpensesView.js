@@ -142,14 +142,18 @@ const ExpensesView = () => {
   };
 
   const handleExportCSV = () => {
-    if (!expenses || expenses.length === 0) return;
+    console.log("Export clicked, expenses:", expenses); 
+    if (!expenses || expenses.length === 0) {
+        alert("No expenses to export!"); 
+        return;
+    }
     const headers = ["Date", "Category", "Description", "Amount", "Currency"];
     const rows = expenses.map((e) => [
-      new Date(e.date).toLocaleDateString(),
-      e.category,
-      e.description || "",
-      e.amount,
-      e.currency,
+        new Date(e.date).toLocaleDateString(),
+        e.category,
+        e.description || "",
+        e.amount,
+        e.currency,
     ]);
     const csv = [headers, ...rows].map((r) => r.join(",")).join("\n");
     const blob = new Blob([csv], { type: "text/csv" });
@@ -157,9 +161,11 @@ const ExpensesView = () => {
     const a = document.createElement("a");
     a.href = url;
     a.download = `expenses_${activeTrip?.destination || "trip"}.csv`;
+    document.body.appendChild(a); 
     a.click();
+    document.body.removeChild(a); 
     URL.revokeObjectURL(url);
-  };
+};
 
   return (
     <Box sx={{ p: 3 }}>
@@ -183,13 +189,14 @@ const ExpensesView = () => {
         <Box sx={{ display: "flex", gap: 1 }}>
           <Tooltip title="Export CSV">
             <Button
-              variant="outlined"
-              startIcon={<DownloadIcon />}
-              onClick={handleExportCSV}
-              sx={{ borderRadius: 3 }}
-            >
-              Export
-            </Button>
+    variant="outlined"
+    startIcon={<DownloadIcon />}
+    onClick={handleExportCSV}
+    disabled={!activeTripId || !expenses || expenses.length === 0} // ← ADD THIS
+    sx={{ borderRadius: 3 }}
+>
+    Export
+</Button>
           </Tooltip>
           <Button
             variant="contained"
