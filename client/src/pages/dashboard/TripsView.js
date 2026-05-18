@@ -182,7 +182,7 @@ const TripsView = () => {
                         {loadingOpts ? (
                           <CircularProgress color="inherit" size={20} />
                         ) : null}
-                        {params.InputProps.endAdornment}
+                        {params?.InputProps?.endAdornment}
                       </React.Fragment>
                     ),
                   }}
