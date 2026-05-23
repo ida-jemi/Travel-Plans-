@@ -983,3 +983,119 @@
     text-align: center;
   }
 }
+
+/* GSSoC '26 Super-Override Fix: Booking Search Section (#119)*/
+
+/* 1. Container Flexbox Reset */
+.wander-page .wander-search-bar {
+  display: flex !important;
+  flex-direction: row !important;
+  grid-template-columns: none !important; /* Disables the broken grid grid structure */
+  align-items: center !important;
+  justify-content: space-between !important;
+  padding: 0 !important;
+  background: #fdfaf5 !important;
+  border-radius: 16px !important;
+  overflow: hidden !important;
+  width: 100% !important;
+}
+
+/* 2. Structured Box Adjustments for Inner Fields */
+.wander-page .wander-sf {
+  flex: 1 1 0% !important;
+  min-width: 0 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: center !important;
+  padding: 1rem 1.75rem !important; 
+  height: 84px !important; 
+  border-right: 1px solid rgba(26, 74, 107, 0.12) !important;
+  border-bottom: none !important;
+}
+
+/* 3. Typography Consistency for Labels */
+.wander-page .wander-sf-label {
+  font-size: 0.75rem !important;
+  font-weight: 700 !important;
+  text-transform: uppercase !important;
+  color: #8bafc4 !important;
+  letter-spacing: 0.8px !important;
+  margin-bottom: 0.3rem !important;
+}
+
+/* 4. Input Text Fields Normalization */
+.wander-page .wander-sf input,
+.wander-page .wander-sf-val {
+  width: 100% !important;
+  border: none !important;
+  outline: none !important;
+  font-size: 0.95rem !important;
+  color: #1a4a6b !important;
+  font-weight: 500 !important;
+  background: transparent !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  height: auto !important;
+}
+
+/* 5. Date Picker Calendar Alignment Overrides */
+.wander-page .wander-sf input[type="date"] {
+  display: flex !important;
+  flex-direction: row !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  padding-right: 0 !important;
+}
+
+/* Hide the absolute emoji span entirely because native browsers have built-in calendar tags */
+.wander-page .wander-sf span[style*="position: absolute"] {
+  display: none !important;
+}
+
+/* 6. Action Button Perfect Height Snap */
+.wander-page .wander-search-btn {
+  height: 84px !important;
+  padding: 0 2.5rem !important;
+  border-radius: 0 !important;
+  margin: 0 !important;
+  font-size: 0.9rem !important;
+  font-weight: 500 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 0.5rem !important;
+}
+
+/*  Viewport Breakpoints (Responsive Fixing Layouts) */
+
+@media (max-width: 1024px) {
+  .wander-page .wander-search-bar {
+    flex-wrap: wrap !important;
+  }
+  .wander-page .wander-sf {
+    flex: 1 1 calc(50% - 1px) !important;
+  }
+  .wander-page .wander-sf:nth-child(2) {
+    border-right: none !important;
+  }
+  .wander-page .wander-search-btn {
+    flex: 1 1 100% !important;
+    height: 56px !important;
+  }
+}
+
+@media (max-width: 900px) {
+  .wander-page .wander-search-bar {
+    flex-direction: column !important;
+  }
+  .wander-page .wander-sf {
+    flex: 1 1 100% !important;
+    width: 100% !important;
+    border-right: none !important;
+    border-bottom: 1px solid rgba(26, 74, 107, 0.08) !important;
+    padding: 1.2rem 1.5rem !important;
+  }
+  .wander-page .wander-search-btn {
+    height: 52px !important;
+  }
+}
