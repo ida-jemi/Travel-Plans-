@@ -262,6 +262,19 @@ cd travel-planner
 
 ### 2. Install Dependencies
 
+> ⚠️ **Important:**  
+> This repository uses separate frontend (`client`) and backend (`server`) environments.
+>
+> Running commands like:
+>
+> ```bash
+> npm run dev
+> ```
+>
+> from the root directory will result in a missing script error.
+>
+> Please install dependencies and run scripts separately inside the `client` and `server` directories.
+
 ```bash
 # Install backend dependencies
 cd server
