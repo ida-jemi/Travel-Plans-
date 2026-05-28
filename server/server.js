@@ -26,24 +26,25 @@ const limiter = rateLimit({
 app.use("/api/auth", limiter);
 
 // Core Middleware
-const allowedOrigins = ["http://localhost:3000"];
-if (process.env.FRONTEND_URL) {
-  allowedOrigins.push(process.env.FRONTEND_URL);
-}
+const allowedOrigins = ["http://localhost:3000", "http://localhost:5000"];
 
 app.use(
   cors({
     origin: function (origin, callback) {
-      // Allow requests with no origin (like mobile apps or curl requests)
+      // Allow requests with no origin (mobile apps, curl, Postman)
       if (!origin) return callback(null, true);
-      if (
-        allowedOrigins.indexOf(origin) !== -1 ||
-        process.env.NODE_ENV !== "production"
-      ) {
-        callback(null, true);
-      } else {
-        callback(new Error("Not allowed by CORS"));
+
+      // Allow localhost aur saare Vercel preview URLs
+      if (origin.includes("localhost") || origin.includes("vercel.app")) {
+        return callback(null, true);
       }
+
+      // FRONTEND_URL env variable se match karo
+      if (process.env.FRONTEND_URL && origin === process.env.FRONTEND_URL) {
+        return callback(null, true);
+      }
+
+      callback(new Error("Not allowed by CORS"));
     },
     credentials: true,
   }),
