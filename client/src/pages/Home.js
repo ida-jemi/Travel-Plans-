@@ -471,6 +471,7 @@ const Home = () => {
         >
           {mobileOpen ? (
             <svg
+              key="close-icon"
               width="24"
               height="24"
               viewBox="0 0 24 24"
@@ -482,6 +483,7 @@ const Home = () => {
             </svg>
           ) : (
             <svg
+              key="menu-icon"
               width="24"
               height="24"
               viewBox="0 0 24 24"
@@ -495,65 +497,48 @@ const Home = () => {
             </svg>
           )}
         </button>
-      </nav>
-
-      {/* Mobile dropdown */}
-      {mobileOpen && (
-        <div
-          style={{
-            background: "var(--white)",
-            borderBottom: "0.5px solid rgba(26,74,107,0.12)",
-            padding: "1rem 1.5rem",
-            display: "flex",
-            flexDirection: "column",
-            gap: "1rem",
-          }}
-        >
-          <a
-            href="#wander-dest-section"
+        {mobileOpen && (
+          <div
             style={{
-              color: "var(--ocean)",
-              textDecoration: "none",
-              fontWeight: 500,
+              position: "absolute",
+              top: "100%",
+              left: 0,
+              right: 0,
+              background: "var(--white)",
+              borderBottom: "0.5px solid rgba(26,74,107,0.12)",
+              boxShadow: "0 16px 32px rgba(15, 45, 64, 0.14)",
+              padding: "1rem 1.5rem",
+              display: "flex",
+              flexDirection: "column",
+              gap: "1rem",
+              zIndex: 1001,
             }}
-            onClick={() => setMobileOpen(false)}
           >
-            Destinations
-          </a>
-          <a
-            href="#wander-features"
-            style={{
-              color: "var(--ocean)",
-              textDecoration: "none",
-              fontWeight: 500,
-            }}
-            onClick={() => setMobileOpen(false)}
-          >
-            Features
-          </a>
-          {isAuthenticated ? (
-            <Link
-              to="/dashboard"
+            <a
+              href="#wander-dest-section"
               style={{
-                color: "var(--coral)",
-                fontWeight: 600,
+                color: "var(--ocean)",
                 textDecoration: "none",
+                fontWeight: 500,
               }}
               onClick={() => setMobileOpen(false)}
             >
-              Dashboard →
-            </Link>
-          ) : (
-            <>
+              Destinations
+            </a>
+            <a
+              href="#wander-features"
+              style={{
+                color: "var(--ocean)",
+                textDecoration: "none",
+                fontWeight: 500,
+              }}
+              onClick={() => setMobileOpen(false)}
+            >
+              Features
+            </a>
+            {isAuthenticated ? (
               <Link
-                to="/login"
-                style={{ color: "var(--ocean)", textDecoration: "none" }}
-                onClick={() => setMobileOpen(false)}
-              >
-                Log In
-              </Link>
-              <Link
-                to="/register"
+                to="/dashboard"
                 style={{
                   color: "var(--coral)",
                   fontWeight: 600,
@@ -561,12 +546,33 @@ const Home = () => {
                 }}
                 onClick={() => setMobileOpen(false)}
               >
-                Sign Up Free →
+                Dashboard →
               </Link>
-            </>
-          )}
-        </div>
-      )}
+            ) : (
+              <>
+                <Link
+                  to="/login"
+                  style={{ color: "var(--ocean)", textDecoration: "none" }}
+                  onClick={() => setMobileOpen(false)}
+                >
+                  Log In
+                </Link>
+                <Link
+                  to="/register"
+                  style={{
+                    color: "var(--coral)",
+                    fontWeight: 600,
+                    textDecoration: "none",
+                  }}
+                  onClick={() => setMobileOpen(false)}
+                >
+                  Sign Up Free →
+                </Link>
+              </>
+            )}
+          </div>
+        )}
+      </nav>
 
       {/* ═══ HERO ═══ */}
       <section className="wander-hero">
