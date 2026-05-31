@@ -67,12 +67,42 @@ const CATEGORIES = [
 ];
 
 const CATEGORY_META = {
-  Clothing:    { color: "#6366f1", bg: "#eef2ff", icon: <CheckroomIcon fontSize="small" />,       muiColor: "primary"   },
-  Toiletries:  { color: "#ec4899", bg: "#fdf2f8", icon: <SpaIcon fontSize="small" />,             muiColor: "secondary" },
-  Electronics: { color: "#0ea5e9", bg: "#f0f9ff", icon: <DevicesIcon fontSize="small" />,         muiColor: "info"      },
-  Documents:   { color: "#f59e0b", bg: "#fffbeb", icon: <ArticleIcon fontSize="small" />,         muiColor: "warning"   },
-  Medicine:    { color: "#ef4444", bg: "#fef2f2", icon: <MedicalServicesIcon fontSize="small" />, muiColor: "error"     },
-  Other:       { color: "#64748b", bg: "#f8fafc", icon: <CategoryIcon fontSize="small" />,        muiColor: "default"   },
+  Clothing: {
+    color: "#6366f1",
+    bg: "#eef2ff",
+    icon: <CheckroomIcon fontSize="small" />,
+    muiColor: "primary",
+  },
+  Toiletries: {
+    color: "#ec4899",
+    bg: "#fdf2f8",
+    icon: <SpaIcon fontSize="small" />,
+    muiColor: "secondary",
+  },
+  Electronics: {
+    color: "#0ea5e9",
+    bg: "#f0f9ff",
+    icon: <DevicesIcon fontSize="small" />,
+    muiColor: "info",
+  },
+  Documents: {
+    color: "#f59e0b",
+    bg: "#fffbeb",
+    icon: <ArticleIcon fontSize="small" />,
+    muiColor: "warning",
+  },
+  Medicine: {
+    color: "#ef4444",
+    bg: "#fef2f2",
+    icon: <MedicalServicesIcon fontSize="small" />,
+    muiColor: "error",
+  },
+  Other: {
+    color: "#64748b",
+    bg: "#f8fafc",
+    icon: <CategoryIcon fontSize="small" />,
+    muiColor: "default",
+  },
 };
 
 const TEMPLATES = [
@@ -109,13 +139,13 @@ const PackingView = () => {
   const { loading, list, error } = useSelector((state) => state.packing);
   const { trips } = useSelector((state) => state.trips);
 
-  const [selectedTripId, setSelectedTripId]   = useState("");
-  const [itemName, setItemName]               = useState("");
-  const [itemCategory, setItemCategory]       = useState("Other");
-  const [filterCategory, setFilterCategory]   = useState("All");
-  const [confirmClear, setConfirmClear]       = useState(false);
-  const [showPacked, setShowPacked]           = useState(true);
-  const [newlyAdded, setNewlyAdded]           = useState(null);
+  const [selectedTripId, setSelectedTripId] = useState("");
+  const [itemName, setItemName] = useState("");
+  const [itemCategory, setItemCategory] = useState("Other");
+  const [filterCategory, setFilterCategory] = useState("All");
+  const [confirmClear, setConfirmClear] = useState(false);
+  const [showPacked, setShowPacked] = useState(true);
+  const [newlyAdded, setNewlyAdded] = useState(null);
 
   useEffect(() => {
     if (trips && trips.length > 0 && !selectedTripId) {
@@ -141,49 +171,83 @@ const PackingView = () => {
   }, [dispatch, selectedTripId, itemName, itemCategory]);
 
   const handleKeyDown = (e) => {
-    if (e.key === "Enter") { e.preventDefault(); handleAdd(); }
+    if (e.key === "Enter") {
+      e.preventDefault();
+      handleAdd();
+    }
   };
 
-  const handleToggle   = (id) => dispatch(togglePackingItem(selectedTripId, id));
-  const handleDelete   = (id) => dispatch(deletePackingItem(selectedTripId, id));
+  const handleToggle = (id) => dispatch(togglePackingItem(selectedTripId, id));
+  const handleDelete = (id) => dispatch(deletePackingItem(selectedTripId, id));
   const handleTemplate = (key) => dispatch(applyTemplate(selectedTripId, key));
-  const handleClearAll = () => { dispatch(clearPackingList(selectedTripId)); setConfirmClear(false); };
+  const handleClearAll = () => {
+    dispatch(clearPackingList(selectedTripId));
+    setConfirmClear(false);
+  };
 
   // ── Derived state ──────────────────────────────────────────────────────────
-  const items     = list?.items || [];
-  const total     = items.length;
-  const packed    = items.filter((i) => i.packed).length;
+  const items = list?.items || [];
+  const total = items.length;
+  const packed = items.filter((i) => i.packed).length;
   const remaining = total - packed;
-  const progress  = total === 0 ? 0 : Math.round((packed / total) * 100);
-  const allDone   = total > 0 && progress === 100;
+  const progress = total === 0 ? 0 : Math.round((packed / total) * 100);
+  const allDone = total > 0 && progress === 100;
 
   const categoryCounts = CATEGORIES.reduce((acc, cat) => {
     acc[cat] = items.filter((i) => i.category === cat).length;
     return acc;
   }, {});
 
-  const filteredItems  = filterCategory === "All" ? items : items.filter((i) => i.category === filterCategory);
-  const unpacked       = filteredItems.filter((i) => !i.packed);
-  const packedItems    = filteredItems.filter((i) => i.packed);
+  const filteredItems =
+    filterCategory === "All"
+      ? items
+      : items.filter((i) => i.category === filterCategory);
+  const unpacked = filteredItems.filter((i) => !i.packed);
+  const packedItems = filteredItems.filter((i) => i.packed);
 
-  const selectedTrip   = trips?.find((t) => t._id === selectedTripId);
-  const tripName       = selectedTrip?.name || selectedTrip?.destination || selectedTrip?.title || "Your Trip";
+  const selectedTrip = trips?.find((t) => t._id === selectedTripId);
+  const tripName =
+    selectedTrip?.name ||
+    selectedTrip?.destination ||
+    selectedTrip?.title ||
+    "Your Trip";
 
   // ── Empty trips guard ──────────────────────────────────────────────────────
   if (!trips || trips.length === 0) {
     return (
-      <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center"
-        minHeight={460} gap={2} sx={{ textAlign: "center", px: 3 }}>
-        <Box sx={{
-          width: 120, height: 120, borderRadius: "50%",
-          background: "linear-gradient(135deg, #e0e7ff 0%, #ede9fe 100%)",
-          display: "flex", alignItems: "center", justifyContent: "center", mb: 1,
-        }}>
+      <Box
+        display="flex"
+        flexDirection="column"
+        alignItems="center"
+        justifyContent="center"
+        minHeight={460}
+        gap={2}
+        sx={{ textAlign: "center", px: 3 }}
+      >
+        <Box
+          sx={{
+            width: 120,
+            height: 120,
+            borderRadius: "50%",
+            background: "linear-gradient(135deg, #e0e7ff 0%, #ede9fe 100%)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            mb: 1,
+          }}
+        >
           <LuggageIcon sx={{ fontSize: 56, color: "#6366f1" }} />
         </Box>
-        <Typography variant="h5" fontWeight={700} color="text.primary">No active trips found</Typography>
-        <Typography variant="body2" color="text.secondary" sx={{ maxWidth: 360 }}>
-          Create your first trip inside the planner board, then come back to build your packing checklist here.
+        <Typography variant="h5" fontWeight={700} color="text.primary">
+          No active trips found
+        </Typography>
+        <Typography
+          variant="body2"
+          color="text.secondary"
+          sx={{ maxWidth: 360 }}
+        >
+          Create your first trip inside the planner board, then come back to
+          build your packing checklist here.
         </Typography>
       </Box>
     );
@@ -191,22 +255,43 @@ const PackingView = () => {
 
   return (
     <Box sx={{ maxWidth: 780, mx: "auto", p: { xs: 2, sm: 3, md: 4 } }}>
-
       {/* ── Page Header ─────────────────────────────────────────────────────── */}
-      <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", mb: 3 }}>
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          mb: 3,
+        }}
+      >
         <Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
-          <Box sx={{
-            width: 44, height: 44, borderRadius: 2.5, flexShrink: 0,
-            background: "linear-gradient(135deg, #6366f1 0%, #818cf8 100%)",
-            display: "flex", alignItems: "center", justifyContent: "center",
-          }}>
+          <Box
+            sx={{
+              width: 44,
+              height: 44,
+              borderRadius: 2.5,
+              flexShrink: 0,
+              background: "linear-gradient(135deg, #6366f1 0%, #818cf8 100%)",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
             <LuggageIcon sx={{ color: "#fff", fontSize: 24 }} />
           </Box>
           <Box>
-            <Typography variant="h6" fontWeight={800} sx={{ letterSpacing: "-0.01em", lineHeight: 1.2 }}>
+            <Typography
+              variant="h6"
+              fontWeight={800}
+              sx={{ letterSpacing: "-0.01em", lineHeight: 1.2 }}
+            >
               Packing Checklist
             </Typography>
-            <Typography variant="body2" color="text.secondary" sx={{ lineHeight: 1.3 }}>
+            <Typography
+              variant="body2"
+              color="text.secondary"
+              sx={{ lineHeight: 1.3 }}
+            >
               Track what you're bringing for your journey.
             </Typography>
           </Box>
@@ -222,7 +307,11 @@ const PackingView = () => {
                 border: "1px solid",
                 borderColor: "error.light",
                 flexShrink: 0,
-                "&:hover": { backgroundColor: "error.main", color: "#fff", borderColor: "error.main" },
+                "&:hover": {
+                  backgroundColor: "error.main",
+                  color: "#fff",
+                  borderColor: "error.main",
+                },
               }}
             >
               <DeleteSweepIcon fontSize="small" />
@@ -260,38 +349,66 @@ const PackingView = () => {
         <>
           {/* ── Error ──────────────────────────────────────────────────────── */}
           {error && (
-            <Alert severity="error" variant="outlined" sx={{ mb: 3, borderRadius: 3 }}>{error}</Alert>
+            <Alert
+              severity="error"
+              variant="outlined"
+              sx={{ mb: 3, borderRadius: 3 }}
+            >
+              {error}
+            </Alert>
           )}
 
           {/* ── Progress Card ───────────────────────────────────────────────── */}
           {total > 0 && (
             <Fade in>
-              <Paper elevation={0} sx={{
-                mb: 4, borderRadius: 4, overflow: "hidden",
-                border: "1px solid", borderColor: allDone ? "success.light" : "divider",
-                background: allDone
-                  ? "linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%)"
-                  : "linear-gradient(135deg, #fafafa 0%, #f1f5f9 100%)",
-                transition: "all 0.4s ease",
-              }}>
-                {/* Top accent bar */}
-                <Box sx={{
-                  height: 4,
+              <Paper
+                elevation={0}
+                sx={{
+                  mb: 4,
+                  borderRadius: 4,
+                  overflow: "hidden",
+                  border: "1px solid",
+                  borderColor: allDone ? "success.light" : "divider",
                   background: allDone
-                    ? "linear-gradient(90deg, #22c55e, #4ade80)"
-                    : `linear-gradient(90deg, #6366f1 ${progress}%, #e2e8f0 ${progress}%)`,
-                  transition: "background 0.6s ease",
-                }} />
+                    ? "linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%)"
+                    : "linear-gradient(135deg, #fafafa 0%, #f1f5f9 100%)",
+                  transition: "all 0.4s ease",
+                }}
+              >
+                {/* Top accent bar */}
+                <Box
+                  sx={{
+                    height: 4,
+                    background: allDone
+                      ? "linear-gradient(90deg, #22c55e, #4ade80)"
+                      : `linear-gradient(90deg, #6366f1 ${progress}%, #e2e8f0 ${progress}%)`,
+                    transition: "background 0.6s ease",
+                  }}
+                />
 
                 <Box sx={{ p: 2.5 }}>
                   {/* Title + % chip row */}
-                  <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 2 }}>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                      mb: 2,
+                    }}
+                  >
                     <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                      {allDone
-                        ? <EmojiEventsIcon sx={{ color: "#22c55e", fontSize: 22 }} />
-                        : <LuggageIcon sx={{ color: "#6366f1", fontSize: 22 }} />
-                      }
-                      <Typography variant="subtitle1" fontWeight={700} color={allDone ? "success.dark" : "text.primary"}>
+                      {allDone ? (
+                        <EmojiEventsIcon
+                          sx={{ color: "#22c55e", fontSize: 22 }}
+                        />
+                      ) : (
+                        <LuggageIcon sx={{ color: "#6366f1", fontSize: 22 }} />
+                      )}
+                      <Typography
+                        variant="subtitle1"
+                        fontWeight={700}
+                        color={allDone ? "success.dark" : "text.primary"}
+                      >
                         {allDone ? "All packed! Ready to go!" : tripName}
                       </Typography>
                     </Box>
@@ -299,26 +416,51 @@ const PackingView = () => {
                       label={`${progress}%`}
                       size="small"
                       sx={{
-                        fontWeight: 800, fontSize: "0.8rem", borderRadius: 2,
+                        fontWeight: 800,
+                        fontSize: "0.8rem",
+                        borderRadius: 2,
                         backgroundColor: allDone ? "#22c55e" : "#6366f1",
-                        color: "#fff", flexShrink: 0,
+                        color: "#fff",
+                        flexShrink: 0,
                       }}
                     />
                   </Box>
 
                   {/* Stat counters — 3 boxes side by side */}
-                  <Box sx={{ display: "flex", flexDirection: "row", gap: 2, mb: 2.5 }}>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      flexDirection: "row",
+                      gap: 2,
+                      mb: 2.5,
+                    }}
+                  >
                     {[
-                      { label: "Total",     value: total,     color: "#64748b" },
-                      { label: "Packed",    value: packed,    color: "#22c55e" },
-                      { label: "Remaining", value: remaining, color: remaining > 0 ? "#f59e0b" : "#22c55e" },
+                      { label: "Total", value: total, color: "#64748b" },
+                      { label: "Packed", value: packed, color: "#22c55e" },
+                      {
+                        label: "Remaining",
+                        value: remaining,
+                        color: remaining > 0 ? "#f59e0b" : "#22c55e",
+                      },
                     ].map((s) => (
-                      <Box key={s.label} sx={{
-                        flex: 1, textAlign: "center", py: 1.5, px: 1,
-                        borderRadius: 2.5, backgroundColor: "rgba(255,255,255,0.7)",
-                        border: "1px solid rgba(0,0,0,0.06)",
-                      }}>
-                        <Typography variant="h5" fontWeight={800} sx={{ color: s.color, lineHeight: 1.1 }}>
+                      <Box
+                        key={s.label}
+                        sx={{
+                          flex: 1,
+                          textAlign: "center",
+                          py: 1.5,
+                          px: 1,
+                          borderRadius: 2.5,
+                          backgroundColor: "rgba(255,255,255,0.7)",
+                          border: "1px solid rgba(0,0,0,0.06)",
+                        }}
+                      >
+                        <Typography
+                          variant="h5"
+                          fontWeight={800}
+                          sx={{ color: s.color, lineHeight: 1.1 }}
+                        >
                           {s.value}
                         </Typography>
                         <Typography
@@ -326,7 +468,11 @@ const PackingView = () => {
                           variant="caption"
                           color="text.secondary"
                           fontWeight={600}
-                          sx={{ textTransform: "uppercase", letterSpacing: "0.05em", display: "block" }}
+                          sx={{
+                            textTransform: "uppercase",
+                            letterSpacing: "0.05em",
+                            display: "block",
+                          }}
                         >
                           {s.label}
                         </Typography>
@@ -336,11 +482,28 @@ const PackingView = () => {
 
                   {/* Progress bar */}
                   <Box>
-                    <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 0.75 }}>
-                      <Typography component="span" variant="caption" fontWeight={600} color="text.secondary">
+                    <Box
+                      sx={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                        mb: 0.75,
+                      }}
+                    >
+                      <Typography
+                        component="span"
+                        variant="caption"
+                        fontWeight={600}
+                        color="text.secondary"
+                      >
                         {packed} of {total} items packed
                       </Typography>
-                      <Typography component="span" variant="caption" fontWeight={700} color={allDone ? "success.main" : "primary.main"}>
+                      <Typography
+                        component="span"
+                        variant="caption"
+                        fontWeight={700}
+                        color={allDone ? "success.main" : "primary.main"}
+                      >
                         {progress}% complete
                       </Typography>
                     </Box>
@@ -348,14 +511,16 @@ const PackingView = () => {
                       variant="determinate"
                       value={progress}
                       sx={{
-                        height: 10, borderRadius: 99,
+                        height: 10,
+                        borderRadius: 99,
                         backgroundColor: "rgba(0,0,0,0.07)",
                         "& .MuiLinearProgress-bar": {
                           borderRadius: 99,
                           background: allDone
                             ? "linear-gradient(90deg, #22c55e, #4ade80)"
                             : "linear-gradient(90deg, #6366f1, #818cf8)",
-                          transition: "transform 0.6s cubic-bezier(0.4, 0, 0.2, 1)",
+                          transition:
+                            "transform 0.6s cubic-bezier(0.4, 0, 0.2, 1)",
                         },
                       }}
                     />
@@ -368,17 +533,39 @@ const PackingView = () => {
           {/* ── Empty-state Quick-Start Templates ──────────────────────────── */}
           {total === 0 && (
             <Fade in>
-              <Paper variant="outlined" sx={{ p: 3.5, mb: 4, borderRadius: 4, textAlign: "center", borderStyle: "dashed", borderColor: "divider" }}>
-                <Box sx={{
-                  width: 64, height: 64, borderRadius: "50%", mx: "auto", mb: 1.5,
-                  background: "linear-gradient(135deg, #e0e7ff 0%, #ede9fe 100%)",
-                  display: "flex", alignItems: "center", justifyContent: "center",
-                }}>
+              <Paper
+                variant="outlined"
+                sx={{
+                  p: 3.5,
+                  mb: 4,
+                  borderRadius: 4,
+                  textAlign: "center",
+                  borderStyle: "dashed",
+                  borderColor: "divider",
+                }}
+              >
+                <Box
+                  sx={{
+                    width: 64,
+                    height: 64,
+                    borderRadius: "50%",
+                    mx: "auto",
+                    mb: 1.5,
+                    background:
+                      "linear-gradient(135deg, #e0e7ff 0%, #ede9fe 100%)",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
                   <LuggageIcon sx={{ fontSize: 32, color: "#6366f1" }} />
                 </Box>
-                <Typography variant="h6" fontWeight={700} mb={0.5}>Your checklist is empty</Typography>
+                <Typography variant="h6" fontWeight={700} mb={0.5}>
+                  Your checklist is empty
+                </Typography>
                 <Typography variant="body2" color="text.secondary" mb={3}>
-                  Add items manually below, or kick-start with a preset template for your trip style:
+                  Add items manually below, or kick-start with a preset template
+                  for your trip style:
                 </Typography>
                 <Grid container spacing={2} justifyContent="center">
                   {TEMPLATES.map((t) => (
@@ -387,8 +574,11 @@ const PackingView = () => {
                         elevation={0}
                         onClick={() => handleTemplate(t.key)}
                         sx={{
-                          p: 2, borderRadius: 3, cursor: "pointer",
-                          background: t.bg, border: "1px solid transparent",
+                          p: 2,
+                          borderRadius: 3,
+                          cursor: "pointer",
+                          background: t.bg,
+                          border: "1px solid transparent",
                           transition: "all 0.2s ease",
                           "&:hover": {
                             transform: "translateY(-3px)",
@@ -397,9 +587,25 @@ const PackingView = () => {
                           },
                         }}
                       >
-                        <Box sx={{ color: t.color, mb: 0.75, "& svg": { fontSize: 28 } }}>{t.icon}</Box>
-                        <Typography variant="subtitle2" fontWeight={700} color="text.primary">{t.label}</Typography>
-                        <Typography variant="caption" color="text.secondary">{t.desc}</Typography>
+                        <Box
+                          sx={{
+                            color: t.color,
+                            mb: 0.75,
+                            "& svg": { fontSize: 28 },
+                          }}
+                        >
+                          {t.icon}
+                        </Box>
+                        <Typography
+                          variant="subtitle2"
+                          fontWeight={700}
+                          color="text.primary"
+                        >
+                          {t.label}
+                        </Typography>
+                        <Typography variant="caption" color="text.secondary">
+                          {t.desc}
+                        </Typography>
                       </Paper>
                     </Grid>
                   ))}
@@ -409,14 +615,24 @@ const PackingView = () => {
           )}
 
           {/* ── Add Item Form ────────────────────────────────────────────────── */}
-          <Paper elevation={0} sx={{
-            p: 2.5, mb: 4, borderRadius: 4,
-            border: "1px solid", borderColor: "divider",
-            background: "#fff",
-          }}>
+          <Paper
+            elevation={0}
+            sx={{
+              p: 2.5,
+              mb: 4,
+              borderRadius: 4,
+              border: "1px solid",
+              borderColor: "divider",
+              background: "#fff",
+            }}
+          >
             <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 2 }}>
               <AddIcon sx={{ fontSize: 18, color: "#6366f1" }} />
-              <Typography variant="subtitle2" fontWeight={700} color="text.primary">
+              <Typography
+                variant="subtitle2"
+                fontWeight={700}
+                color="text.primary"
+              >
                 Add New Item
               </Typography>
             </Box>
@@ -445,8 +661,20 @@ const PackingView = () => {
                   >
                     {CATEGORIES.map((c) => (
                       <MenuItem key={c} value={c}>
-                        <Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
-                          <Box sx={{ color: CATEGORY_META[c]?.color, display: "flex", alignItems: "center" }}>
+                        <Box
+                          sx={{
+                            display: "flex",
+                            alignItems: "center",
+                            gap: 1.5,
+                          }}
+                        >
+                          <Box
+                            sx={{
+                              color: CATEGORY_META[c]?.color,
+                              display: "flex",
+                              alignItems: "center",
+                            }}
+                          >
                             {CATEGORY_META[c]?.icon}
                           </Box>
                           {c}
@@ -465,11 +693,22 @@ const PackingView = () => {
                   onClick={handleAdd}
                   disabled={!itemName.trim()}
                   sx={{
-                    height: 56, borderRadius: 3, textTransform: "none", fontWeight: 700,
-                    background: "linear-gradient(135deg, #6366f1 0%, #818cf8 100%)",
+                    height: 56,
+                    borderRadius: 3,
+                    textTransform: "none",
+                    fontWeight: 700,
+                    background:
+                      "linear-gradient(135deg, #6366f1 0%, #818cf8 100%)",
                     boxShadow: "0 4px 14px rgba(99,102,241,0.3)",
-                    "&:hover": { boxShadow: "0 6px 20px rgba(99,102,241,0.4)", transform: "translateY(-1px)" },
-                    "&:disabled": { background: "#e2e8f0", color: "#94a3b8", boxShadow: "none" },
+                    "&:hover": {
+                      boxShadow: "0 6px 20px rgba(99,102,241,0.4)",
+                      transform: "translateY(-1px)",
+                    },
+                    "&:disabled": {
+                      background: "#e2e8f0",
+                      color: "#94a3b8",
+                      boxShadow: "none",
+                    },
                     transition: "all 0.2s ease",
                   }}
                 >
@@ -486,7 +725,12 @@ const PackingView = () => {
                 variant="caption"
                 fontWeight={700}
                 color="text.disabled"
-                sx={{ textTransform: "uppercase", letterSpacing: "0.08em", display: "block", mb: 1.5 }}
+                sx={{
+                  textTransform: "uppercase",
+                  letterSpacing: "0.08em",
+                  display: "block",
+                  mb: 1.5,
+                }}
               >
                 Filter by category
               </Typography>
@@ -496,17 +740,20 @@ const PackingView = () => {
                   clickable
                   onClick={() => setFilterCategory("All")}
                   sx={{
-                    fontWeight: 700, borderRadius: 2,
-                    backgroundColor: filterCategory === "All" ? "#6366f1" : "transparent",
+                    fontWeight: 700,
+                    borderRadius: 2,
+                    backgroundColor:
+                      filterCategory === "All" ? "#6366f1" : "transparent",
                     color: filterCategory === "All" ? "#fff" : "text.secondary",
                     border: "1.5px solid",
-                    borderColor: filterCategory === "All" ? "#6366f1" : "divider",
+                    borderColor:
+                      filterCategory === "All" ? "#6366f1" : "divider",
                     transition: "all 0.2s",
                   }}
                 />
                 {CATEGORIES.map((cat) => {
                   if (categoryCounts[cat] === 0) return null;
-                  const meta   = CATEGORY_META[cat];
+                  const meta = CATEGORY_META[cat];
                   const active = filterCategory === cat;
                   return (
                     <Chip
@@ -515,13 +762,16 @@ const PackingView = () => {
                       clickable
                       onClick={() => setFilterCategory(cat)}
                       sx={{
-                        fontWeight: 700, borderRadius: 2,
+                        fontWeight: 700,
+                        borderRadius: 2,
                         backgroundColor: active ? meta.color : "transparent",
                         color: active ? "#fff" : "text.secondary",
                         border: "1.5px solid",
                         borderColor: active ? meta.color : "divider",
                         transition: "all 0.2s",
-                        "&:hover": { backgroundColor: active ? meta.color : meta.bg },
+                        "&:hover": {
+                          backgroundColor: active ? meta.color : meta.bg,
+                        },
                       }}
                     />
                   );
@@ -532,7 +782,6 @@ const PackingView = () => {
 
           {/* ── Item List ────────────────────────────────────────────────────── */}
           <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
-
             {/* Unpacked items */}
             {unpacked.map((item) => (
               <Fade in key={item._id}>
@@ -551,7 +800,15 @@ const PackingView = () => {
             {packedItems.length > 0 && (
               <>
                 <Box
-                  sx={{ display: "flex", alignItems: "center", gap: 1, mt: 1, mb: 0.5, cursor: "pointer", userSelect: "none" }}
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 1,
+                    mt: 1,
+                    mb: 0.5,
+                    cursor: "pointer",
+                    userSelect: "none",
+                  }}
                   onClick={() => setShowPacked((v) => !v)}
                 >
                   <Divider sx={{ flex: 1 }} />
@@ -561,8 +818,11 @@ const PackingView = () => {
                     icon={showPacked ? <ExpandLessIcon /> : <ExpandMoreIcon />}
                     onClick={() => setShowPacked((v) => !v)}
                     sx={{
-                      fontWeight: 700, borderRadius: 2, fontSize: "0.72rem",
-                      backgroundColor: "#f0fdf4", color: "#16a34a",
+                      fontWeight: 700,
+                      borderRadius: 2,
+                      fontSize: "0.72rem",
+                      backgroundColor: "#f0fdf4",
+                      color: "#16a34a",
                       border: "1px solid #bbf7d0",
                       "& .MuiChip-icon": { color: "#16a34a" },
                       cursor: "pointer",
@@ -572,7 +832,9 @@ const PackingView = () => {
                 </Box>
 
                 <Collapse in={showPacked}>
-                  <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
+                  <Box
+                    sx={{ display: "flex", flexDirection: "column", gap: 1 }}
+                  >
                     {packedItems.map((item) => (
                       <Fade in key={item._id}>
                         <Box sx={{ opacity: 0.7 }}>
@@ -591,7 +853,12 @@ const PackingView = () => {
 
             {/* Empty filter state */}
             {filteredItems.length === 0 && total > 0 && (
-              <Typography color="text.secondary" align="center" py={4} variant="body2">
+              <Typography
+                color="text.secondary"
+                align="center"
+                py={4}
+                variant="body2"
+              >
                 No items in the <strong>{filterCategory}</strong> category yet.
               </Typography>
             )}
@@ -599,27 +866,56 @@ const PackingView = () => {
 
           {/* ── Bottom Template Injectors ────────────────────────────────────── */}
           {total > 0 && (
-            <Box mt={4} pt={2.5} sx={{
-              display: "flex", alignItems: "center", gap: 1.5, flexWrap: "wrap",
-              borderTop: "1px dashed", borderColor: "divider",
-            }}>
-              <Typography variant="caption" fontWeight={700} color="text.disabled"
-                sx={{ textTransform: "uppercase", letterSpacing: "0.07em" }}>
+            <Box
+              mt={4}
+              pt={2.5}
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                gap: 1.5,
+                flexWrap: "wrap",
+                borderTop: "1px dashed",
+                borderColor: "divider",
+              }}
+            >
+              <Typography
+                variant="caption"
+                fontWeight={700}
+                color="text.disabled"
+                sx={{ textTransform: "uppercase", letterSpacing: "0.07em" }}
+              >
                 Add preset pack:
               </Typography>
               {TEMPLATES.map((t) => (
                 <Chip
                   key={t.key}
-                  icon={<Box sx={{ display: "flex", color: t.color, ml: "8px !important" }}>{t.icon}</Box>}
+                  icon={
+                    <Box
+                      sx={{
+                        display: "flex",
+                        color: t.color,
+                        ml: "8px !important",
+                      }}
+                    >
+                      {t.icon}
+                    </Box>
+                  }
                   label={t.label}
                   size="small"
                   onClick={() => handleTemplate(t.key)}
                   sx={{
-                    fontWeight: 600, borderRadius: 2, py: 1.5, cursor: "pointer",
-                    border: "1.5px solid", borderColor: t.color + "50",
+                    fontWeight: 600,
+                    borderRadius: 2,
+                    py: 1.5,
+                    cursor: "pointer",
+                    border: "1.5px solid",
+                    borderColor: t.color + "50",
                     backgroundColor: t.color + "10",
                     color: t.color,
-                    "&:hover": { backgroundColor: t.color + "20", borderColor: t.color },
+                    "&:hover": {
+                      backgroundColor: t.color + "20",
+                      borderColor: t.color,
+                    },
                     transition: "all 0.2s",
                   }}
                 />
@@ -643,21 +939,34 @@ const PackingView = () => {
         </DialogTitle>
         <DialogContent>
           <DialogContentText variant="body2">
-            This will permanently remove all <strong>{total} items</strong> from your checklist for this trip. This action cannot be undone.
+            This will permanently remove all <strong>{total} items</strong> from
+            your checklist for this trip. This action cannot be undone.
           </DialogContentText>
         </DialogContent>
         <DialogActions sx={{ px: 2, pb: 2, gap: 1 }}>
           <Button
             onClick={() => setConfirmClear(false)}
             variant="outlined"
-            sx={{ borderRadius: 2.5, textTransform: "none", fontWeight: 600, flex: 1 }}
+            sx={{
+              borderRadius: 2.5,
+              textTransform: "none",
+              fontWeight: 600,
+              flex: 1,
+            }}
           >
             Cancel
           </Button>
           <Button
-            color="error" variant="contained"
+            color="error"
+            variant="contained"
             onClick={handleClearAll}
-            sx={{ borderRadius: 2.5, textTransform: "none", fontWeight: 600, boxShadow: "none", flex: 1 }}
+            sx={{
+              borderRadius: 2.5,
+              textTransform: "none",
+              fontWeight: 600,
+              boxShadow: "none",
+              flex: 1,
+            }}
           >
             Clear All
           </Button>
@@ -722,18 +1031,30 @@ const ItemRow = ({ item, onToggle, onDelete, isNew }) => {
       {/* Category badge */}
       <Box
         sx={{
-          display: "flex", alignItems: "center", gap: 0.5,
-          px: 1.25, py: 0.4, mr: 1, borderRadius: 99,
+          display: "flex",
+          alignItems: "center",
+          gap: 0.5,
+          px: 1.25,
+          py: 0.4,
+          mr: 1,
+          borderRadius: 99,
           backgroundColor: item.packed ? "transparent" : meta.bg,
           color: item.packed ? "text.disabled" : meta.color,
-          border: "1px solid", borderColor: item.packed ? "transparent" : meta.color + "40",
+          border: "1px solid",
+          borderColor: item.packed ? "transparent" : meta.color + "40",
           opacity: item.packed ? 0.5 : 1,
           transition: "all 0.25s ease",
           flexShrink: 0,
         }}
       >
-        <Box sx={{ display: "flex", "& svg": { fontSize: 13 } }}>{meta.icon}</Box>
-        <Typography variant="caption" fontWeight={700} sx={{ fontSize: "0.67rem", lineHeight: 1 }}>
+        <Box sx={{ display: "flex", "& svg": { fontSize: 13 } }}>
+          {meta.icon}
+        </Box>
+        <Typography
+          variant="caption"
+          fontWeight={700}
+          sx={{ fontSize: "0.67rem", lineHeight: 1 }}
+        >
           {item.category}
         </Typography>
       </Box>
@@ -744,7 +1065,8 @@ const ItemRow = ({ item, onToggle, onDelete, isNew }) => {
           size="small"
           onClick={onDelete}
           sx={{
-            color: "text.disabled", flexShrink: 0,
+            color: "text.disabled",
+            flexShrink: 0,
             "&:hover": { color: "#ef4444", backgroundColor: "#fef2f2" },
             transition: "all 0.2s ease",
           }}
