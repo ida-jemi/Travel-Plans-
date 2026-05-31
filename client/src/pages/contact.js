@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { FaEnvelope, FaPhone, FaMapMarkerAlt } from "react-icons/fa";
-import "./Contact.css";
 
 const Contact = () => {
   const [formData, setFormData] = useState({
@@ -11,16 +10,15 @@ const Contact = () => {
   });
 
   const handleChange = (e) => {
-    setFormData({
-      ...formData,
+    setFormData((prev) => ({
+      ...prev,
       [e.target.name]: e.target.value,
-    });
+    }));
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    // Replace with API call
     console.log(formData);
 
     alert("Thank you! Your message has been sent.");
@@ -34,105 +32,313 @@ const Contact = () => {
   };
 
   return (
-    <div className="contact-page">
-      <div className="contact-hero">
-        <h1>Contact Us</h1>
-        <p>
-          Have questions about your next adventure? We'd love to hear from you.
+    <div
+      style={{
+        minHeight: "100vh",
+        background: "#f8fafc",
+      }}
+    >
+      {/* Hero Section */}
+      <div
+        style={{
+          background: "linear-gradient(135deg, #1a4a6b, #0f2f47)",
+          color: "#fff",
+          textAlign: "center",
+          padding: "100px 20px 80px",
+        }}
+      >
+        <h1
+          style={{
+            fontSize: "3rem",
+            marginBottom: "15px",
+          }}
+        >
+          Contact Us
+        </h1>
+
+        <p
+          style={{
+            maxWidth: "650px",
+            margin: "0 auto",
+            fontSize: "1.1rem",
+            opacity: 0.9,
+          }}
+        >
+          Have questions about your next adventure? Our travel experts are here
+          to help you plan the perfect journey.
         </p>
       </div>
 
-      <div className="contact-container">
+      {/* Main Content */}
+      <div
+        style={{
+          maxWidth: "1200px",
+          margin: "-50px auto 60px",
+          padding: "0 20px",
+          display: "grid",
+          gridTemplateColumns: "repeat(auto-fit, minmax(350px, 1fr))",
+          gap: "30px",
+        }}
+      >
         {/* Contact Information */}
-        <div className="contact-info">
-          <h2>Get In Touch</h2>
+        <div
+          style={{
+            background: "#fff",
+            borderRadius: "20px",
+            padding: "35px",
+            boxShadow: "0 10px 30px rgba(0,0,0,0.08)",
+          }}
+        >
+          <h2
+            style={{
+              color: "#1a4a6b",
+              marginBottom: "30px",
+            }}
+          >
+            Get In Touch
+          </h2>
 
-          <div className="contact-item">
-            <FaEnvelope className="contact-icon" />
+          <div
+            style={{
+              display: "flex",
+              gap: "15px",
+              marginBottom: "25px",
+              alignItems: "flex-start",
+            }}
+          >
+            <FaEnvelope
+              style={{
+                color: "#ff6b57",
+                fontSize: "22px",
+                marginTop: "4px",
+              }}
+            />
+
             <div>
-              <h4>Email</h4>
-              <p>support@packgo.com</p>
+              <h4 style={{ margin: "0 0 5px", color: "#1a4a6b" }}>Email</h4>
+              <p style={{ margin: 0, color: "#666" }}>support@packgo.com</p>
             </div>
           </div>
 
-          <div className="contact-item">
-            <FaPhone className="contact-icon" />
+          <div
+            style={{
+              display: "flex",
+              gap: "15px",
+              marginBottom: "25px",
+              alignItems: "flex-start",
+            }}
+          >
+            <FaPhone
+              style={{
+                color: "#ff6b57",
+                fontSize: "22px",
+                marginTop: "4px",
+              }}
+            />
+
             <div>
-              <h4>Phone</h4>
-              <p>+91 98765 43210</p>
+              <h4 style={{ margin: "0 0 5px", color: "#1a4a6b" }}>Phone</h4>
+              <p style={{ margin: 0, color: "#666" }}>+91 98765 43210</p>
             </div>
           </div>
 
-          <div className="contact-item">
-            <FaMapMarkerAlt className="contact-icon" />
+          <div
+            style={{
+              display: "flex",
+              gap: "15px",
+              marginBottom: "25px",
+              alignItems: "flex-start",
+            }}
+          >
+            <FaMapMarkerAlt
+              style={{
+                color: "#ff6b57",
+                fontSize: "22px",
+                marginTop: "4px",
+              }}
+            />
+
             <div>
-              <h4>Office</h4>
-              <p>Mumbai, Maharashtra, India</p>
+              <h4 style={{ margin: "0 0 5px", color: "#1a4a6b" }}>Office</h4>
+              <p style={{ margin: 0, color: "#666" }}>
+                Mumbai, Maharashtra, India
+              </p>
             </div>
           </div>
 
-          <div className="contact-hours">
-            <h4>Business Hours</h4>
-            <p>Monday - Friday: 9:00 AM - 6:00 PM</p>
-            <p>Saturday: 10:00 AM - 4:00 PM</p>
-            <p>Sunday: Closed</p>
+          <div
+            style={{
+              marginTop: "35px",
+              paddingTop: "20px",
+              borderTop: "1px solid #eee",
+            }}
+          >
+            <h4 style={{ color: "#1a4a6b", marginBottom: "12px" }}>
+              Business Hours
+            </h4>
+
+            <p style={{ color: "#666", margin: "6px 0" }}>
+              Monday – Friday: 9:00 AM – 6:00 PM
+            </p>
+
+            <p style={{ color: "#666", margin: "6px 0" }}>
+              Saturday: 10:00 AM – 4:00 PM
+            </p>
+
+            <p style={{ color: "#666", margin: "6px 0" }}>Sunday: Closed</p>
           </div>
         </div>
 
         {/* Contact Form */}
-        <div className="contact-form-card">
-          <h2>Send Us A Message</h2>
+        <div
+          style={{
+            background: "#fff",
+            borderRadius: "20px",
+            padding: "35px",
+            boxShadow: "0 10px 30px rgba(0,0,0,0.08)",
+          }}
+        >
+          <h2
+            style={{
+              color: "#1a4a6b",
+              marginBottom: "25px",
+            }}
+          >
+            Send Us A Message
+          </h2>
 
           <form onSubmit={handleSubmit}>
-            <div className="form-group">
-              <label>Name</label>
+            <div style={{ marginBottom: "18px" }}>
+              <label
+                style={{
+                  display: "block",
+                  marginBottom: "8px",
+                  color: "#1a4a6b",
+                  fontWeight: 600,
+                }}
+              >
+                Name
+              </label>
+
               <input
                 type="text"
                 name="name"
-                placeholder="Your Name"
                 value={formData.name}
                 onChange={handleChange}
+                placeholder="Your Name"
                 required
+                style={{
+                  width: "100%",
+                  padding: "14px",
+                  border: "1px solid #d8e0e8",
+                  borderRadius: "10px",
+                  boxSizing: "border-box",
+                }}
               />
             </div>
 
-            <div className="form-group">
-              <label>Email</label>
+            <div style={{ marginBottom: "18px" }}>
+              <label
+                style={{
+                  display: "block",
+                  marginBottom: "8px",
+                  color: "#1a4a6b",
+                  fontWeight: 600,
+                }}
+              >
+                Email
+              </label>
+
               <input
                 type="email"
                 name="email"
-                placeholder="Your Email"
                 value={formData.email}
                 onChange={handleChange}
+                placeholder="Your Email"
                 required
+                style={{
+                  width: "100%",
+                  padding: "14px",
+                  border: "1px solid #d8e0e8",
+                  borderRadius: "10px",
+                  boxSizing: "border-box",
+                }}
               />
             </div>
 
-            <div className="form-group">
-              <label>Subject</label>
+            <div style={{ marginBottom: "18px" }}>
+              <label
+                style={{
+                  display: "block",
+                  marginBottom: "8px",
+                  color: "#1a4a6b",
+                  fontWeight: 600,
+                }}
+              >
+                Subject
+              </label>
+
               <input
                 type="text"
                 name="subject"
-                placeholder="Subject"
                 value={formData.subject}
                 onChange={handleChange}
+                placeholder="Subject"
                 required
+                style={{
+                  width: "100%",
+                  padding: "14px",
+                  border: "1px solid #d8e0e8",
+                  borderRadius: "10px",
+                  boxSizing: "border-box",
+                }}
               />
             </div>
 
-            <div className="form-group">
-              <label>Message</label>
+            <div style={{ marginBottom: "20px" }}>
+              <label
+                style={{
+                  display: "block",
+                  marginBottom: "8px",
+                  color: "#1a4a6b",
+                  fontWeight: 600,
+                }}
+              >
+                Message
+              </label>
+
               <textarea
                 name="message"
                 rows="6"
-                placeholder="Tell us how we can help..."
                 value={formData.message}
                 onChange={handleChange}
+                placeholder="Tell us how we can help..."
                 required
+                style={{
+                  width: "100%",
+                  padding: "14px",
+                  border: "1px solid #d8e0e8",
+                  borderRadius: "10px",
+                  resize: "vertical",
+                  boxSizing: "border-box",
+                }}
               />
             </div>
 
-            <button type="submit" className="contact-btn">
+            <button
+              type="submit"
+              style={{
+                width: "100%",
+                padding: "15px",
+                border: "none",
+                borderRadius: "12px",
+                background: "#ff6b57",
+                color: "#fff",
+                fontSize: "16px",
+                fontWeight: "600",
+                cursor: "pointer",
+              }}
+            >
               Send Message
             </button>
           </form>
