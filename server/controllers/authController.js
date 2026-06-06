@@ -83,13 +83,18 @@ exports.login = async (req, res, next) => {
     }
 
     // Check if user exists
-    let user = await User.findOne({ email });
+    let user = await User.findOne({ email }).select("+password");
     if (!user) {
       return res.status(400).json({ msg: "Invalid credentials" });
     }
 
-    // Check password
-    const isMatch = await user.comparePassword(password);
+    // Check password (upgrade legacy plaintext hashes on successful login)
+    let isMatch;
+    try {
+      isMatch = await user.verifyPassword(password, { upgradeLegacy: true });
+    } catch (err) {
+      return next(err);
+    }
     if (!isMatch) {
       return res.status(400).json({ msg: "Invalid credentials" });
     }
@@ -169,9 +174,9 @@ exports.googleAuth = async (req, res) => {
 // Get user profile
 exports.getProfile = async (req, res, next) => {
   try {
-    console.log(req.user);
-    const user = await User.findById(req.user.id).select("-password");
-    console.log("get Profile :", user);
+    const user = await User.findById(req.user.id).select(
+      "name email date isVerified",
+    );
     res.json(user);
   } catch (err) {
     next(err);
@@ -190,7 +195,7 @@ exports.updateProfile = async (req, res, next) => {
       req.user.id,
       { $set: updateFields },
       { new: true },
-    ).select("-password");
+    ).select("name email date isVerified");
 
     res.json(user);
   } catch (err) {
@@ -202,8 +207,13 @@ exports.updateProfile = async (req, res, next) => {
 exports.changePassword = async (req, res, next) => {
   try {
     const { currentPassword, newPassword } = req.body;
-    const user = await User.findById(req.user.id);
-    const isMatch = await user.comparePassword(currentPassword);
+    const user = await User.findById(req.user.id).select("+password");
+    let isMatch;
+    try {
+      isMatch = await user.verifyPassword(currentPassword);
+    } catch (err) {
+      return next(err);
+    }
     if (!isMatch) {
       return res.status(400).json({ msg: "Current password is incorrect" });
     }
@@ -286,7 +296,7 @@ exports.resetPassword = async (req, res, next) => {
     const user = await User.findOne({
       resetPasswordToken,
       resetPasswordExpire: { $gt: Date.now() },
-    });
+    }).select("+password");
 
     if (!user) {
       return res.status(400).json({ msg: "Invalid token" });
@@ -414,9 +424,9 @@ exports.requestEmailChange = async (req, res, next) => {
         ),
       });
     } catch (emailErr) {
-      logEmailFailure("email change OTP", emailErr);
+      console.error("[authController] Email change OTP failure:", emailErr);
       return res.status(500).json({
-        msg: buildEmailFailureMessage("email change request"),
+        msg: "Failed to send email verification code. Please try again later.",
       });
     }
 
