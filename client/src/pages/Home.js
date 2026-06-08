@@ -405,7 +405,9 @@ const Home = () => {
 
   useEffect(() => {
     try {
-      const saved = JSON.parse(localStorage.getItem(SEARCH_HISTORY_KEY) ?? "[]");
+      const saved = JSON.parse(
+        localStorage.getItem(SEARCH_HISTORY_KEY) ?? "[]",
+      );
       if (Array.isArray(saved)) {
         setRecentSearches(saved.filter((item) => typeof item === "string"));
       }
@@ -421,7 +423,7 @@ const Home = () => {
     const nextSearches = [
       normalized,
       ...recentSearches.filter(
-        (item) => item.toLowerCase() !== normalized.toLowerCase()
+        (item) => item.toLowerCase() !== normalized.toLowerCase(),
       ),
     ].slice(0, 5);
 
@@ -438,7 +440,7 @@ const Home = () => {
             ? r.data
             : Array.isArray(r.data?.destinations)
               ? r.data.destinations
-              : []
+              : [],
         );
         setLoading(false);
       })
@@ -473,7 +475,7 @@ const Home = () => {
         startDate: checkIn || today.toISOString().split("T")[0],
         endDate: next.toISOString().split("T")[0],
         description: `Trip to ${dest.city || dest.name}`,
-      })
+      }),
     );
     navigate("/dashboard/trips");
   };
@@ -497,7 +499,7 @@ const Home = () => {
           (d.name || "").toLowerCase().includes(where.toLowerCase()) ||
           (d.city || "").toLowerCase().includes(where.toLowerCase()) ||
           (d.state || "").toLowerCase().includes(where.toLowerCase()) ||
-          (d.category || "").toLowerCase().includes(where.toLowerCase())
+          (d.category || "").toLowerCase().includes(where.toLowerCase()),
       )
     : Array.isArray(destinations)
       ? destinations
